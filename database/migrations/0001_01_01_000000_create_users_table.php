@@ -38,7 +38,8 @@ return new class extends Migration {
         $default_admin = User::create([
             'name' => 'admin',
             'username' => 'admin',
-            'password' => 'admin'
+            'password' => 'admin',
+            'is_admin' => true
         ]);
 
         $default_admin->save();

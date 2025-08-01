@@ -26,13 +26,12 @@
         @if (auth()->user()->is_admin)
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Adminisztrátor')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('dashboard')"
-                        :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}
+                    <flux:navlist.item icon="user" :href="route('users')" :current="request()->routeIs('users')"
+                        wire:navigate>{{ __('Felhasználók') }}
                     </flux:navlist.item>
                 </flux:navlist.group>
-                <flux:navlist.item icon="book-open-text" :href="route('history')"
-                    :current="request()->routeIs('history')">
-                    {{ __('Előzmények') }}
+                <flux:navlist.item icon="car" :href="route('vehicles')" :current="request()->routeIs('vehicles')">
+                    {{ __('Gépjárművek') }}
                 </flux:navlist.item>
             </flux:navlist>
         @endif

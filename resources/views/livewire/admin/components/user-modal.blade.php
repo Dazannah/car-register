@@ -23,7 +23,11 @@ $watch('show', value => {
     <div data-dialog="dialog"
         class="relative mx-auto flex w-full max-w-[24rem] flex-col rounded-xl bg-white dark:bg-neutral-900 bg-clip-border text-slate-700 shadow-md">
         <div class="flex flex-col p-6">
-            <flux:heading size="xl" x-text="modal_title"></flux:heading>
+            <div class="flex items-center justify-between">
+                <flux:heading size="xl" x-text="modal_title"></flux:heading>
+                <flux:button class="cursor-pointer" @click.prevent="show = false" icon="x-mark" variant="subtle" />
+            </div>
+
             <div class="w-full max-w-sm min-w-[200px] mt-4">
                 <flux:input wire:model="form.name" :label="__('Név')" type="text" required autofocus
                     autocomplete="form.name" placeholder="Név" />
@@ -62,8 +66,9 @@ $watch('show', value => {
         </div>
         <div class="p-6 pt-0">
             <div class="flex space-x-2">
-                <flux:button @click.prevent="show = false" variant="danger" class="w-full hover:cursor-pointer">
-                    {{ __('Mégse') }}
+                <flux:button x-show="method_name == 'update_user'" @click.prevent="update_user, [update_user_id]"
+                    variant="danger" class="w-full hover:cursor-pointer">
+                    {{ __('Delete') }}
                 </flux:button>
 
                 <flux:button @click.prevent="method_name" color="green" variant="primary"

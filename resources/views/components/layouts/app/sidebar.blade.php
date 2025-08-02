@@ -35,6 +35,10 @@
                         :current="request()->routeIs('vehicles')" wire:navigate>
                         {{ __('Gépjárművek') }}
                     </flux:navlist.item>
+                    <flux:navlist.item icon="map" :href="route('manage-history')"
+                        :current="request()->routeIs('manage-history')" wire:navigate>
+                        {{ __('Előzmények kezelése') }}
+                    </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
         @endif

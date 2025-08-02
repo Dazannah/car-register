@@ -14,13 +14,15 @@
         </a>
 
         <flux:navlist variant="outline">
-            <flux:navlist.group :heading="__('Felhasználó')" class="grid">
+            <flux:navlist.group class="grid">
                 <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                     wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+
+                <flux:navlist.item icon="book-open-text" :href="route('history')"
+                    :current="request()->routeIs('history')" wire:navigate>
+                    {{ __('Előzmények') }}
+                </flux:navlist.item>
             </flux:navlist.group>
-            <flux:navlist.item icon="book-open-text" :href="route('history')" :current="request()->routeIs('history')">
-                {{ __('Előzmények') }}
-            </flux:navlist.item>
         </flux:navlist>
 
         @if (auth()->user()->is_admin)
@@ -29,10 +31,11 @@
                     <flux:navlist.item icon="user" :href="route('users')" :current="request()->routeIs('users')"
                         wire:navigate>{{ __('Felhasználók') }}
                     </flux:navlist.item>
+                    <flux:navlist.item icon="car" :href="route('vehicles')"
+                        :current="request()->routeIs('vehicles')" wire:navigate>
+                        {{ __('Gépjárművek') }}
+                    </flux:navlist.item>
                 </flux:navlist.group>
-                <flux:navlist.item icon="car" :href="route('vehicles')" :current="request()->routeIs('vehicles')">
-                    {{ __('Gépjárművek') }}
-                </flux:navlist.item>
             </flux:navlist>
         @endif
 

@@ -69,7 +69,7 @@ class User extends Authenticatable {
             ->implode('');
     }
 
-    public function status(): HasOne {
-        return $this->hasOne(Status::class, 'status_id');
+    public function status() {
+        return $this->belongsTo(Status::class, 'status_id');
     }
 }

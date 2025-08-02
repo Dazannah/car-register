@@ -22,14 +22,16 @@
                             class="p-2 transition-colors border-y border-slate-200 bg-slate-50 hover:bg-slate-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">
                             <flux:field>
                                 <flux:label>Felvéve</flux:label>
-                                <input type="datetime-local" name="pickup-time">
+                                <input class="text-slate-700 dark:text-gray-200" type="datetime-local"
+                                    name="pickup-time">
                             </flux:field>
                         </th>
                         <th
                             class="p-2 transition-colors border-y border-slate-200 bg-slate-50 hover:bg-slate-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">
                             <flux:field>
                                 <flux:label>Leadva</flux:label>
-                                <input type="datetime-local" name="return-time">
+                                <input class="text-slate-700 dark:text-gray-200" type="datetime-local"
+                                    name="return-time">
                             </flux:field>
                         </th>
 
@@ -57,13 +59,15 @@
                         <td class="p-2 border-b border-slate-200">
                             <div class="flex items-center gap-3">
                                 <div class="flex flex-col">
-                                    <input type="datetime-local" name="return-time" value="2025-08-01 09:05" disabled>
+                                    <input class="text-slate-700 dark:text-gray-200" type="datetime-local"
+                                        name="return-time" value="2025-08-01 09:05" disabled>
                                 </div>
                             </div>
                         </td>
                         <td class="p-2 border-b border-slate-200">
                             <div class="flex flex-col">
-                                <input type="datetime-local" name="return-time" value="2025-08-01 14:00" disabled>
+                                <input class="text-slate-700 dark:text-gray-200" type="datetime-local"
+                                    name="return-time" value="2025-08-01 14:00" disabled>
                             </div>
                         </td>
 

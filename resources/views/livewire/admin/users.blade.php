@@ -50,65 +50,70 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="sticky left-0 z-100 p-2 border-b border-slate-200">
-                            <div class="flex items-center gap-3">
-                                <div class="flex flex-col p-1 bg-white dark:bg-neutral-900">
-                                    <p class="text-sm font-semibold text-slate-700 dark:text-gray-200 uppercase">
-                                        John Michael
+                    @foreach ($users as $user)
+                        <tr>
+                            <td class="sticky left-0 z-100 p-2 border-b border-slate-200">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex flex-col p-1 bg-white dark:bg-neutral-900">
+                                        <p class="text-sm font-semibold text-slate-700 dark:text-gray-200 uppercase">
+                                            {{ $user->name }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 border-b border-slate-200">
+                                <div class="flex flex-col">
+                                    <p class="text-sm font-semibold text-slate-700 dark:text-gray-200">
+                                        {{ $user->username }}
                                     </p>
                                 </div>
-                            </div>
-                        </td>
-                        <td class="p-2 border-b border-slate-200">
-                            <div class="flex flex-col">
-                                <p class="text-sm font-semibold text-slate-700 dark:text-gray-200">
-                                    manager
+                            </td>
+                            <td class="p-2 border-b border-slate-200">
+                                <div class="w-max">
+                                    @if ($user->status->technical_name == 'active')
+                                        <div
+                                            class="relative grid items-center px-2 py-1 font-sans text-xs font-bold text-green-900 uppercase rounded-md select-none whitespace-nowrap bg-green-500/20 dark:text-gray-200 dark:bg-green-500/80">
+                                            <span class="">{{ $user->status->display_name }}</span>
+                                        </div>
+                                    @else
+                                        <div
+                                            class="relative grid items-center px-2 py-1 font-sans text-xs font-bold text-red-900 uppercase rounded-md select-none whitespace-nowrap bg-red-500/20 dark:text-gray-200 dark:bg-red-500/80">
+                                            <span class="">{{ $user->status->display_name }}</span>
+                                        </div>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="p-2 border-b border-slate-200">
+                                <p class="text-sm text-slate-500 dark:text-gray-200">
+                                    MVD141
                                 </p>
-                            </div>
-                        </td>
-                        <td class="p-2 border-b border-slate-200">
-                            <div class="w-max">
-                                <div
-                                    class="relative grid items-center px-2 py-1 font-sans text-xs font-bold text-green-900 uppercase rounded-md select-none whitespace-nowrap bg-green-500/20 dark:text-gray-200 dark:bg-green-500/80">
-                                    <span class="">aktív</span>
-                                </div>
-                                <div
-                                    class="relative grid items-center px-2 py-1 font-sans text-xs font-bold text-red-900 uppercase rounded-md select-none whitespace-nowrap bg-red-500/20 dark:text-gray-200 dark:bg-red-500/80">
-                                    <span class="">inaktív</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="p-2 border-b border-slate-200">
-                            <p class="text-sm text-slate-500 dark:text-gray-200">
-                                MVD141
-                            </p>
-                            <p class="text-sm text-slate-500 dark:text-gray-200">
-                                UPK502
-                            </p>
-                            <p class="text-sm text-slate-500 dark:text-gray-200">
-                                UPK502
-                            </p>
-                            <p class="text-sm text-slate-500 dark:text-gray-200">
-                                UPK502
-                            </p>
-                            <p class="text-sm text-slate-500 dark:text-gray-200">
-                                UPK502
-                            </p>
-                            <p class="text-sm text-slate-500 dark:text-gray-200">
-                                UPK502
-                            </p>
-                        </td>
-                        <td class="p-2 border-b border-slate-200">
-                            <button @click.prevent="show_update = true; update_user_id = {{ 1 }}"
-                                class="relative cursor-pointer h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-slate-900 dark:text-gray-200 transition-all hover:bg-slate-900/10 active:bg-slate-900/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                                type="button">
-                                <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-                                    <flux:icon.pencil />
-                                </span>
-                            </button>
-                        </td>
-                    </tr>
+                                <p class="text-sm text-slate-500 dark:text-gray-200">
+                                    UPK502
+                                </p>
+                                <p class="text-sm text-slate-500 dark:text-gray-200">
+                                    UPK502
+                                </p>
+                                <p class="text-sm text-slate-500 dark:text-gray-200">
+                                    UPK502
+                                </p>
+                                <p class="text-sm text-slate-500 dark:text-gray-200">
+                                    UPK502
+                                </p>
+                                <p class="text-sm text-slate-500 dark:text-gray-200">
+                                    UPK502
+                                </p>
+                            </td>
+                            <td class="p-2 border-b border-slate-200">
+                                <button @click.prevent="show_update = true; update_user_id = {{ 1 }}"
+                                    class="relative cursor-pointer h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-slate-900 dark:text-gray-200 transition-all hover:bg-slate-900/10 active:bg-slate-900/20 dark:hover:bg-slate-400/10 dark:active:bg-slate-400/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                    type="button">
+                                    <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                                        <flux:icon.pencil />
+                                    </span>
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -117,6 +122,7 @@
                 Összesen: 10
             </p>
             <div class="flex gap-1">
+                {{ $users->links(data: ['scrollTo' => false]) }}
                 <flux:button @click.prevent="prewious_page" class="w-full hover:cursor-pointer">
                     <flux:icon.chevron-left />
                 </flux:button>

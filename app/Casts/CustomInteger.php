@@ -22,7 +22,7 @@ class CustomInteger implements CastsAttributes {
      * @param  array<string, mixed>  $attributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): mixed {
-        if (is_numeric($value) && notNullValue($value) && intval($value) > 0)
+        if (is_numeric($value) && !empty($value))
             return intval($value);
 
         throw new ArgumentOutOfRangeException('Nem megfelelő input, integert kell megadni');

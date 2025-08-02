@@ -17,60 +17,42 @@ $watch('show', value => {
         show_new = value
         show_update = value
     }
-});" x-show="show" data-dialog-backdrop="dialog"
+});" x-cloak x-show="show" x-transition data-dialog-backdrop="dialog"
     data-dialog-backdrop-close="true"
     class="absolute left-0 top-0 inset-0 z-[999] grid h-screen w-screen place-items-center bg-black/10 backdrop-blur-sm transition-opacity duration-300">
     <div data-dialog="dialog"
-        class="relative mx-auto flex w-full max-w-[24rem] flex-col rounded-xl bg-white bg-clip-border text-slate-700 shadow-md">
+        class="relative mx-auto flex w-full max-w-[24rem] flex-col rounded-xl bg-white dark:bg-neutral-900 bg-clip-border text-slate-700 shadow-md">
         <div class="flex flex-col p-6">
-            <h4 class="text-2xl mb-1 font-semibold text-slate-700" x-text="modal_title">
-            </h4>
+            <flux:heading size="xl" x-text="modal_title"></flux:heading>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <label class="block mb-1 text-sm text-slate-700">
-                    Rendszám
-                </label>
-                <input type="text"
-                    class="w-full h-10 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md"
-                    placeholder="Rendszám" />
+                <flux:input wire:model="form.licence_plate" :label="__('Rendszám')" type="text" required autofocus
+                    autocomplete="form.licence_plate" placeholder="Rendszám" />
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <label class="block mb-1 text-sm text-slate-700">
-                    Típus
-                </label>
-                <input type="text"
-                    class="w-full h-10 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md"
-                    placeholder="Típus" />
+                <flux:input wire:model="form.vehicle_type" :label="__('Típus')" type="text" required
+                    autocomplete="form.vehicle_type" placeholder="Típus" />
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <label class="block mb-1 text-sm text-slate-700">
-                    Alvázszám
-                </label>
-                <input type="text"
-                    class="w-full h-10 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md"
-                    placeholder="Alvázszám" />
+                <flux:select wire:model="status">
+                    <flux:select.option>Aktív</flux:select.option>
+                    <flux:select.option>Inaktív</flux:select.option>
+                </flux:select>
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <label class="block mb-1 text-sm text-slate-700">
-                    Státusz
-                </label>
-                <input type="select"
-                    class="w-full h-10 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md"
-                    placeholder="Státusz" />
+                <flux:input wire:model="form.vin" :label="__('Alvázszám')" type="text" required
+                    autocomplete="form.vin" placeholder="Alvázszám" />
             </div>
         </div>
         <div class="p-6 pt-0">
             <div class="flex space-x-2">
-                <button @click.prevent="show = false"
-                    class="w-full cursor-pointer mx-auto select-none rounded border border-red-600 py-2 px-4 text-center text-sm font-semibold text-red-600 transition-all hover:bg-red-600 hover:text-white hover:shadow-md hover:shadow-red-600/20 active:bg-red-700 active:text-white active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    type="button" data-dialog-close="true">
-                    Mégse
-                </button>
+                <flux:button @click.prevent="show = false" variant="danger" class="w-full hover:cursor-pointer">
+                    {{ __('Mégse') }}
+                </flux:button>
 
-                <button
-                    class="w-full cursor-pointer mx-auto select-none rounded bg-slate-800 py-2 px-4 text-center text-sm font-semibold text-white shadow-md shadow-slate-900/10 transition-all hover:shadow-lg hover:shadow-slate-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    type="button" data-dialog-close="true">
-                    Mentés
-                </button>
+                <flux:button @click.prevent="method_name" color="green" variant="primary"
+                    class="w-full hover:cursor-pointer">
+                    {{ __('Mentés') }}
+                </flux:button>
             </div>
         </div>
     </div>

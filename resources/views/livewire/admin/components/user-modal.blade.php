@@ -17,11 +17,11 @@ $watch('show', value => {
         show_new = value
         show_update = value
     }
-});" x-show="show" data-dialog-backdrop="dialog"
+});" x-cloak x-show="show" x-transition data-dialog-backdrop="dialog"
     data-dialog-backdrop-close="true"
     class="absolute left-0 top-0 inset-0 z-[999] grid h-screen w-screen place-items-center bg-black/10 backdrop-blur-sm transition-opacity duration-300">
     <div data-dialog="dialog"
-        class="relative mx-auto flex w-full max-w-[24rem] flex-col rounded-xl bg-white bg-clip-border text-slate-700 shadow-md">
+        class="relative mx-auto flex w-full max-w-[24rem] flex-col rounded-xl bg-white dark:bg-neutral-900 bg-clip-border text-slate-700 shadow-md">
         <div class="flex flex-col p-6">
             <flux:heading size="xl" x-text="modal_title"></flux:heading>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
@@ -33,14 +33,9 @@ $watch('show', value => {
                     autocomplete="username" placeholder="Felhasználónév" />
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <flux:select wire:model="status" placeholder="Státusz választása">
-                    <flux:select.option>Photography</flux:select.option>
-                    <flux:select.option>Design services</flux:select.option>
-                    <flux:select.option>Web development</flux:select.option>
-                    <flux:select.option>Accounting</flux:select.option>
-                    <flux:select.option>Legal services</flux:select.option>
-                    <flux:select.option>Consulting</flux:select.option>
-                    <flux:select.option>Other</flux:select.option>
+                <flux:select wire:model="status">
+                    <flux:select.option>Aktív</flux:select.option>
+                    <flux:select.option>Inaktív</flux:select.option>
                 </flux:select>
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
@@ -51,12 +46,23 @@ $watch('show', value => {
                 <flux:input wire:model="password_confirm" :label="__('Jelszó megerősítése')" type="password" required
                     placeholder="Jelszó megerősítése" />
             </div>
-
+            <div class="w-full max-w-sm min-w-[200px] max-h-[30vh] mt-4 overflow-y-scroll">
+                <flux:checkbox.group wire:model="licence_plates" label="Gépjárművek hozzárendelése">
+                    <flux:input wire:model.live="filter_licence_plate" class="mb-2 sticky top-0 dark:bg-neutral-800"
+                        type="text" placeholder="Rendszám keresése" />
+                    <flux:checkbox value="1" label="MVD141" description="Hyundai Coupe 2004 2.0" />
+                    <flux:checkbox value="2" label="UPK502" description="Honda CB500 1996" />
+                    <flux:checkbox value="3" label="AAAA125" description="Random autó évszám" />
+                    <flux:checkbox value="3" label="AAAA125" description="Random autó évszám" />
+                    <flux:checkbox value="3" label="AAAA125" description="Random autó évszám" />
+                    <flux:checkbox value="3" label="AAAA125" description="Random autó évszám" />
+                    <flux:checkbox value="3" label="AAAA125" description="Random autó évszám" />
+                </flux:checkbox.group>
+            </div>
         </div>
         <div class="p-6 pt-0">
             <div class="flex space-x-2">
-                <flux:button @click.prevent="show = false" color="red" variant="primary"
-                    class="w-full hover:cursor-pointer">
+                <flux:button @click.prevent="show = false" variant="danger" class="w-full hover:cursor-pointer">
                     {{ __('Mégse') }}
                 </flux:button>
 

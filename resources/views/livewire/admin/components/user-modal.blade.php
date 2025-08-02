@@ -31,6 +31,7 @@ $watch('show', value => {
             <div class="w-full max-w-sm min-w-[200px] mt-4">
                 <flux:input wire:model="form.name" :label="__('Név')" type="text" required autofocus
                     autocomplete="form.name" placeholder="Név" />
+                <flux:error name="form.name" />
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
                 <flux:input wire:model="username" :label="__('Felhasználónév')" type="text" required
@@ -68,7 +69,7 @@ $watch('show', value => {
             <div class="flex space-x-2">
                 <flux:button x-show="method_name == 'update_user'" @click.prevent="update_user, [update_user_id]"
                     variant="danger" class="w-full hover:cursor-pointer">
-                    {{ __('Delete') }}
+                    {{ __('Törlés') }}
                 </flux:button>
 
                 <flux:button @click.prevent="method_name" color="green" variant="primary"

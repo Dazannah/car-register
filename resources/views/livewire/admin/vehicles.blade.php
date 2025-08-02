@@ -52,9 +52,9 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="sticky left-0 p-2 border-b border-slate-200">
-                            <div class=" flex items-center gap-3">
-                                <div class="flex flex-col">
+                        <td class="sticky left-0 z-100 p-2 border-b border-slate-200">
+                            <div class="flex items-center gap-3">
+                                <div class="flex flex-col p-1 bg-white dark:bg-neutral-900">
                                     <p class="text-sm font-semibold text-slate-700 dark:text-gray-200 uppercase">
                                         mvd141
                                     </p>

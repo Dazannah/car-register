@@ -34,7 +34,8 @@ class User extends Authenticatable {
         'name' => CustomString::class,
         'username' => CustomString::class,
         'is_admin' => CustomBoolean::class,
-        'status_id' => CustomInteger::class
+        'status_id' => CustomInteger::class,
+        'password' => 'hashed',
     ];
 
     /**
@@ -46,17 +47,6 @@ class User extends Authenticatable {
         'password',
         'remember_token',
     ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array {
-        return [
-            'password' => 'hashed',
-        ];
-    }
 
     /**
      * Get the user's initials
@@ -71,5 +61,9 @@ class User extends Authenticatable {
 
     public function status() {
         return $this->belongsTo(Status::class, 'status_id');
+    }
+
+    public function vehicles() {
+        return $this->belongsToMany(Vehicle::class);
     }
 }

@@ -3,6 +3,7 @@
 use Livewire\Volt\Volt;
 use App\Livewire\Admin\Users;
 use App\Http\Middleware\IsAdmin;
+use App\Livewire\Admin\ManageHistory;
 use App\Livewire\Admin\Vehicles;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,10 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () 
 
     Route::get('/vehicles', Vehicles::class)
         ->name('vehicles');
+
+
+    Route::get('/manage-history', ManageHistory::class)
+        ->name('manage-history');
 });
 
 

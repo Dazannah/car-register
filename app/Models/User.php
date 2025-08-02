@@ -3,7 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Casts\CustomBoolean;
+use App\Casts\CustomInteger;
+use App\Casts\CustomString;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -21,7 +26,15 @@ class User extends Authenticatable {
         'name',
         'username',
         'password',
-        'is_admin'
+        'is_admin',
+        'status_id'
+    ];
+
+    protected $casts = [
+        'name' => CustomString::class,
+        'username' => CustomString::class,
+        'is_admin' => CustomBoolean::class,
+        'status_id' => CustomInteger::class
     ];
 
     /**
@@ -54,5 +67,9 @@ class User extends Authenticatable {
             ->take(2)
             ->map(fn($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    public function status(): HasOne {
+        return $this->hasOne(Status::class, 'status_id');
     }
 }

@@ -1,20 +1,20 @@
-<div x-data="{ show: false, method_name: '', modal_title: '' }" x-init="$watch('show_new', value => {
+<div x-data="{ show: false, method_name: '', modal_title: '' }" x-init="{{-- $watch('show_new', value => {
     show = value
     method_name = 'create_vehicles'
     modal_title = 'Gépjármű hozzáadása'
 
     if (value) $dispatch('create_user')
-});
+ }); --}}
 $watch('show_update', value => {
     show = value
-    method_name = 'update_vehicles'
-    modal_title = 'Gépjármű módosítása'
+    method_name = 'update_history'
+    modal_title = 'Előzmény módosítása'
 
-    if (value) $dispatch('update_vehicles', [update_vehicles_id])
+    if (value) $dispatch('update_history', [update_history_id])
 });
 $watch('show', value => {
     if (!value) {
-        show_new = value
+        {{-- show_new = value --}}
         show_update = value
     }
 });" x-cloak x-show="show" x-transition data-dialog-backdrop="dialog"
@@ -29,28 +29,36 @@ $watch('show', value => {
             </div>
 
             <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <flux:input wire:model="form.licence_plate" :label="__('Rendszám')" type="text" required autofocus
-                    autocomplete="form.licence_plate" placeholder="Rendszám" />
+                <div class="w-full max-w-sm min-w-[200px] mt-4">
+                    <flux:select searchable wire:model="form.user">
+                        <flux:select.option>Fábián Dávid</flux:select.option>
+                    </flux:select>
+                </div>
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <flux:input wire:model="form.vehicle_type" :label="__('Típus')" type="text" required
-                    autocomplete="form.vehicle_type" placeholder="Típus" />
+                <flux:field>
+                    <flux:label>Felvéve</flux:label>
+                    <input wire:model="form.pickup_time" type="datetime-local">
+                </flux:field>
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <flux:select wire:model="status">
-                    <flux:select.option>Aktív</flux:select.option>
-                    <flux:select.option>Inaktív</flux:select.option>
+                <flux:field>
+                    <flux:label>Leadva</flux:label>
+                    <input wire:model="form.return_time" type="datetime-local">
+                </flux:field>
+            </div>
+
+            <div class="w-full max-w-sm min-w-[200px] mt-4">
+                <flux:select wire:model="form.vehicle">
+                    <flux:select.option>UPK502</flux:select.option>
                 </flux:select>
             </div>
-            <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <flux:input wire:model="form.vin" :label="__('Alvázszám')" type="text" required
-                    autocomplete="form.vin" placeholder="Alvázszám" />
-            </div>
+
         </div>
         <div class="p-6 pt-0">
             <div class="flex space-x-2">
-                <flux:button x-show="method_name == 'update_vehicles'"
-                    @click.prevent="update_vehicles, [update_vehicles_id]" variant="danger"
+                <flux:button x-show="method_name == 'update_history'"
+                    @click.prevent="update_history, [update_history_id]" variant="danger"
                     class="w-full hover:cursor-pointer">
                     {{ __('Törlés') }}
                 </flux:button>

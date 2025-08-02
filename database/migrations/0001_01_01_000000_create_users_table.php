@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('username')->unique();
             $table->string('password');
             $table->boolean('is_admin')->default(false);
+            $table->foreignId('status_id')->default(1)->constrained();
             $table->rememberToken();
             $table->timestamps();
         });

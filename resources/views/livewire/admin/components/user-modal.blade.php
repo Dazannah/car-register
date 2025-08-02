@@ -23,63 +23,47 @@ $watch('show', value => {
     <div data-dialog="dialog"
         class="relative mx-auto flex w-full max-w-[24rem] flex-col rounded-xl bg-white bg-clip-border text-slate-700 shadow-md">
         <div class="flex flex-col p-6">
-            <h4 class="text-2xl mb-1 font-semibold text-slate-700" x-text="modal_title">
-            </h4>
+            <flux:heading size="xl" x-text="modal_title"></flux:heading>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <label class="block mb-1 text-sm text-slate-700">
-                    Név
-                </label>
-                <input type="text"
-                    class="w-full h-10 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md"
-                    placeholder="Név" />
+                <flux:input wire:model="form.name" :label="__('Név')" type="text" required autofocus
+                    autocomplete="form.name" placeholder="Név" />
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <label class="block mb-1 text-sm text-slate-700">
-                    Felhasználónév
-                </label>
-                <input type="text"
-                    class="w-full h-10 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md"
-                    placeholder="Felhasználónév" />
+                <flux:input wire:model="username" :label="__('Felhasználónév')" type="text" required
+                    autocomplete="username" placeholder="Felhasználónév" />
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <label class="block mb-1 text-sm text-slate-700">
-                    Státusz
-                </label>
-                <input type="select"
-                    class="w-full h-10 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md"
-                    placeholder="Státusz" />
+                <flux:select wire:model="status" placeholder="Státusz választása">
+                    <flux:select.option>Photography</flux:select.option>
+                    <flux:select.option>Design services</flux:select.option>
+                    <flux:select.option>Web development</flux:select.option>
+                    <flux:select.option>Accounting</flux:select.option>
+                    <flux:select.option>Legal services</flux:select.option>
+                    <flux:select.option>Consulting</flux:select.option>
+                    <flux:select.option>Other</flux:select.option>
+                </flux:select>
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <label class="block mb-1 text-sm text-slate-700">
-                    Jelszó
-                </label>
-                <input type="password"
-                    class="w-full h-10 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md"
+                <flux:input wire:model="password" :label="__('Jelszó')" type="password" required
                     placeholder="Jelszó" />
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <label class="block mb-1 text-sm text-slate-700">
-                    Jelszó megerősítése
-                </label>
-                <input type="text"
-                    class="w-full h-10 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md"
+                <flux:input wire:model="password_confirm" :label="__('Jelszó megerősítése')" type="password" required
                     placeholder="Jelszó megerősítése" />
             </div>
 
         </div>
         <div class="p-6 pt-0">
             <div class="flex space-x-2">
-                <button @click.prevent="show = false"
-                    class="w-full cursor-pointer mx-auto select-none rounded border border-red-600 py-2 px-4 text-center text-sm font-semibold text-red-600 transition-all hover:bg-red-600 hover:text-white hover:shadow-md hover:shadow-red-600/20 active:bg-red-700 active:text-white active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    type="button" data-dialog-close="true">
-                    Mégse
-                </button>
+                <flux:button @click.prevent="show = false" color="red" variant="primary"
+                    class="w-full hover:cursor-pointer">
+                    {{ __('Mégse') }}
+                </flux:button>
 
-                <button
-                    class="w-full cursor-pointer mx-auto select-none rounded bg-slate-800 py-2 px-4 text-center text-sm font-semibold text-white shadow-md shadow-slate-900/10 transition-all hover:shadow-lg hover:shadow-slate-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    type="button" data-dialog-close="true">
-                    Mentés
-                </button>
+                <flux:button @click.prevent="method_name" color="green" variant="primary"
+                    class="w-full hover:cursor-pointer">
+                    {{ __('Mentés') }}
+                </flux:button>
             </div>
         </div>
     </div>

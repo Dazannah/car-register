@@ -6,12 +6,10 @@
                     <h3 class="text-lg font-semibold text-slate-800">Felhasználók</h3>
                 </div>
                 <div class="flex flex-col gap-2 shrink-0 sm:flex-row">
-                    <button @click.prevent="show_new = true"
-                        class="flex cursor-pointer select-none items-center gap-2 rounded bg-slate-800 py-2.5 px-4 text-xs font-semibold text-white shadow-md shadow-slate-900/10 transition-all hover:shadow-lg hover:shadow-slate-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                        type="button">
+                    <flux:button @click.prevent="show_new = true" variant="primary" class="w-full hover:cursor-pointer">
                         <flux:icon.user-plus />
-                        Új hozzáadása
-                    </button>
+                        {{ __('Új hozzáadása') }}
+                    </flux:button>
                 </div>
             </div>
 
@@ -21,28 +19,19 @@
                 <thead>
                     <tr>
                         <th class="p-2 transition-colors border-y border-slate-200 bg-slate-50 hover:bg-slate-100">
-                            <p
-                                class="flex items-center justify-between gap-2 font-sans text-sm font-normal leading-none text-slate-500">
-                                Név
-                            </p>
+                            <flux:input size="sm" placeholder="Név" />
                         </th>
                         <th class="p-2 transition-colors border-y border-slate-200 bg-slate-50 hover:bg-slate-100">
-                            <p
-                                class="flex items-center justify-between gap-2 font-sans text-sm font-normal leading-none text-slate-500">
-                                Felhasználónév
-                            </p>
+                            <flux:input size="sm" placeholder="Felhasználónév" />
                         </th>
                         <th class="p-2 transition-colors border-y border-slate-200 bg-slate-50 hover:bg-slate-100">
-                            <p
-                                class="flex items-center justify-between gap-2 font-sans text-sm  font-normal leading-none text-slate-500">
-                                Státusz
-                            </p>
+                            <flux:select wire:model="status_filter" size="sm" placeholder="Státusz">
+                                <flux:select.option>Aktív</flux:select.option>
+                                <flux:select.option>Inaktív services</flux:select.option>
+                            </flux:select>
                         </th>
                         <th class="p-2 transition-colors border-y border-slate-200 bg-slate-50 hover:bg-slate-100">
-                            <p
-                                class="flex items-center justify-between gap-2 font-sans text-sm  font-normal leading-none text-slate-500">
-                                Rendszámok
-                            </p>
+                            <flux:input size="sm" placeholder="Rendszámok" />
                         </th>
                         <th class="p-2 transition-colors border-y border-slate-200 bg-slate-50 hover:bg-slate-100">
                             <p

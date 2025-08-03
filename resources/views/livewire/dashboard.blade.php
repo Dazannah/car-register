@@ -34,7 +34,9 @@
                                 <p class="block leading-normal font-light mb-4 max-w-lg">
                                     Felvette: {{ $user_vehicle->trips[0]->user->name }}
                                 </p>
-                                <input type="datetime-local" value="{{ $user_vehicle->trips[0]->pickup_at }}" disabled>
+                                <input type="datetime-local"
+                                    value="{{ $user_vehicle->trips[0]->pickup_at->setTimezone('Europe/Budapest')->format('Y-m-d\TH:i') }}"
+                                    disabled>
                             </div>
                         @else
                             <div>

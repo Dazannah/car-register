@@ -14,7 +14,6 @@
                     </flux:button>
                 </div>
             </div>
-
         </div>
         <div class="p-0 overflow-scroll">
             <table class="w-full mt-4 text-left table-auto min-w-max">
@@ -22,29 +21,31 @@
                     <tr>
                         <th
                             class="p-2 transition-colors border-y border-slate-200 bg-slate-50 hover:bg-slate-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">
-                            <flux:input size="sm" placeholder="Név" />
+                            <flux:input wire:model.live="filter_name" size="sm" placeholder="Név" />
                         </th>
                         <th
                             class="p-2 transition-colors border-y border-slate-200 bg-slate-50 hover:bg-slate-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">
-                            <flux:input size="sm" placeholder="Felhasználónév" />
+                            <flux:input wire:model.live="filter_username" size="sm" placeholder="Felhasználónév" />
                         </th>
                         <th
                             class="p-2 transition-colors border-y border-slate-200 bg-slate-50 hover:bg-slate-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">
-                            <flux:select wire:model="status_filter" size="sm">
-                                <flux:select.option>Válassz státuszt</flux:select.option>
+                            <flux:select wire:model.live="filter_status" size="sm">
+                                <flux:select.option value="">Válassz státuszt</flux:select.option>
                                 @foreach ($statuses as $status)
-                                    <flux:select.option value="{{ $status->id }}">{{ $status->display_name }}
+                                    <flux:select.option value="{{ $status->technical_name }}">
+                                        {{ $status->display_name }}
                                     </flux:select.option>
                                 @endforeach
                             </flux:select>
                         </th>
                         <th
                             class="p-2 transition-colors border-y border-slate-200 bg-slate-50 hover:bg-slate-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">
-                            <flux:input size="sm" placeholder="Rendszámok" />
+                            <flux:input wire:model.live="filter_licence_plate" size="sm"
+                                placeholder="Rendszámok" />
                         </th>
                         <th
                             class="p-2 transition-colors border-y border-slate-200 bg-slate-50 hover:bg-slate-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">
-                            <flux:button @click.prevent="reset_users_filter" variant="primary"
+                            <flux:button @click.prevent="$wire['reset_users_filter']()" variant="primary"
                                 class="w-full hover:cursor-pointer">
                                 <flux:icon.list-restart />
                             </flux:button>
@@ -107,19 +108,7 @@
             </table>
         </div>
         <div class="flex items-center justify-between p-3">
-            {{ $users->links(data: ['scrollTo' => false]) }}
-            {{-- <p class="block text-sm text-slate-500 dark:text-gray-400">
-                Összesen: 10
-            </p>
-            <div class="flex gap-1">
-
-                <flux:button @click.prevent="prewious_page" class="w-full hover:cursor-pointer">
-                    <flux:icon.chevron-left />
-                </flux:button>
-                <flux:button @click.prevent="next_page" class="w-full hover:cursor-pointer">
-                    <flux:icon.chevron-right />
-                </flux:button>
-            </div> --}}
+            {{ $users->links() }}
         </div>
     </div>
 

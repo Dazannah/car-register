@@ -115,5 +115,5 @@
         </div>
     </div>
 
-    {{-- <livewire:admin.components.manage-history-modal /> --}}
+    <livewire:admin.components.manage-history-modal />
 </div>

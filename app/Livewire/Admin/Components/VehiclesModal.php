@@ -35,14 +35,14 @@ class VehiclesModal extends Component {
         try {
             $this->form->update();
 
-            $this->dispatch('user_save_success');
-            $this->dispatch('remount_users');
+            $this->dispatch('vehicle_save_success');
+            $this->dispatch('remount_vehicles');
         } catch (ValidationException $err) {
             throw $err;
         } catch (Exception $err) {
             $this->error_message = $err->getMessage();
 
-            $this->dispatch('remount_users');
+            $this->dispatch('remount_vehicles');
         }
     }
 

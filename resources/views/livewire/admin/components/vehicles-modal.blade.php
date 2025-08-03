@@ -17,6 +17,9 @@ $watch('show', value => {
         show_new = value
         show_update = value
     }
+});
+window.addEventListener('close_vehicle_modal', () => {
+    show = false
 });" x-cloak x-show="show" x-transition data-dialog-backdrop="dialog"
     data-dialog-backdrop-close="true"
     class="absolute left-0 top-0 inset-0 z-[999] grid h-screen w-screen place-items-center bg-black/10 backdrop-blur-sm transition-opacity duration-300">

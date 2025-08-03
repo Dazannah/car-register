@@ -61,7 +61,8 @@
                                 <div class="flex items-center gap-3">
                                     <div class="flex flex-col">
                                         <input class="text-slate-700 dark:text-gray-200" type="datetime-local"
-                                            value="{{ $trip->pickup_at }}" disabled>
+                                            value="{{ $trip->pickup_at->setTimezone('Europe/Budapest')->format('Y-m-d\TH:i') }}"
+                                            disabled>
                                     </div>
                                 </div>
                             </td>
@@ -69,7 +70,8 @@
                                 <div class="flex flex-col">
                                     @if ($trip->is_closed)
                                         <input class="text-slate-700 dark:text-gray-200" type="datetime-local"
-                                            value="{{ $trip->return_at }}" disabled>
+                                            value="{{ $trip->return_at->setTimezone('Europe/Budapest')->format('Y-m-d\TH:i') }}"
+                                            disabled>
                                     @endif
 
                                 </div>

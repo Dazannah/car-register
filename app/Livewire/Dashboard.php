@@ -35,8 +35,6 @@ class Dashboard extends Component {
             if ($trip = Trip::where([['vehicle_id', '=', $vehicle_id], ['pickup_at', '<=', $utcDate], ['return_at', '>=', $utcDate]])->first())
                 throw new Exception('A gépjármű ebben az időpontban nem volt elérhető');
 
-
-
             $trip = Trip::create([
                 'user_id' => auth()->user()->id,
                 'vehicle_id' => $vehicle_id,

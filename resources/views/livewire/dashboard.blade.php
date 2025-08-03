@@ -22,9 +22,7 @@
                         <p class="block leading-normal font-light mb-4 max-w-lg">
                             Felvette: Teszt Elek
                         </p>
-                        <p class="block leading-normal font-light mb-4 max-w-lg">
-                            2025-08-01 09:05
-                        </p>
+                        <input wire:model="pickup_time" type="datetime-local" disabled>
                     </div>
                     <div>
                         <h5 class="text-2xl text-green-600 font-semibold">

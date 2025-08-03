@@ -1,4 +1,4 @@
-<div x-data="{ show_manage: falsen }"
+<div x-data="{ show_manage: false }"
     class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl text-slate-800 dark:text-gray-200">
     <div class="flex justify-center items-center w-full">
         <x-action-message-success class="me-3" on="show_success">

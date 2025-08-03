@@ -70,6 +70,7 @@ class TripForm extends Form {
             $this->trip->is_closed = false;
         }
 
+        $this->trip->timestamps = false;
         $this->trip->save();
     }
 

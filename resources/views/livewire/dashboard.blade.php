@@ -1,5 +1,14 @@
 <div x-data="{ show_manage: falsen }"
     class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl text-slate-800 dark:text-gray-200">
+    <div class="flex justify-center items-center w-full">
+        <x-action-message-success class="me-3" on="show_success">
+            {{ $success_message }}
+        </x-action-message-success>
+
+        @if (!empty($error_message))
+            <flux:text color="red" class="mt-2">{{ $error_message }}</flux:text>
+        @endif
+    </div>
 
     <div class="grid auto-rows-min gap-4 md:grid-cols-3">
         @foreach ($user_vehicles as $user_vehicle)
@@ -25,7 +34,7 @@
                                 <p class="block leading-normal font-light mb-4 max-w-lg">
                                     Felvette: {{ $user_vehicle->trips[0]->user->name }}
                                 </p>
-                                <input wire:model="pickup_time" type="datetime-local" disabled>
+                                <input type="datetime-local" value="{{ $user_vehicle->trips[0]->pickup_at }}" disabled>
                             </div>
                         @else
                             <div>
@@ -40,22 +49,27 @@
                         @endif
                     </div>
                     <div class="text-center">
-                        @if (count($user_vehicle->trips) > 0)
-                            @if ($user_vehicle->trips[0]->user_id == auth()->user()->id)
-                                <flux:button @click.prevent="return_vehicle" variant="primary" color="red"
-                                    class="w-full hover:cursor-pointer">
-                                    <flux:icon.warehouse />
-                                    {{ __('Leadás') }}
+                        <div class="flex justify-center items-center w-full">
+                            <flux:icon.loading wire:loading />
+                        </div>
+                        <div wire:loading.remove>
+                            @if (count($user_vehicle->trips) > 0)
+                                @if ($user_vehicle->trips[0]->user_id == auth()->user()->id)
+                                    <flux:button
+                                        @click.prevent="$wire['return_vehicle']({{ $user_vehicle->trips[0]->id }})"
+                                        variant="primary" color="red" class="w-full hover:cursor-pointer">
+                                        <flux:icon.warehouse />
+                                        {{ __('Leadás') }}
+                                    </flux:button>
+                                @endif
+                            @else
+                                <flux:button @click.prevent="$wire['pickup_vehicle']({{ $user_vehicle->id }})"
+                                    variant="primary" color="green" class="w-full hover:cursor-pointer">
+                                    <flux:icon.car-front />
+                                    {{ __('Felvétel') }}
                                 </flux:button>
                             @endif
-                        @else
-                            <flux:button @click.prevent="$wire['pickup_vehicle']({{ $user_vehicle->id }})"
-                                variant="primary" color="green" class="w-full hover:cursor-pointer">
-                                <flux:icon.car-front />
-                                {{ __('Felvétel') }}
-                            </flux:button>
-                        @endif
-
+                        </div>
                     </div>
                 </div>
             </div>

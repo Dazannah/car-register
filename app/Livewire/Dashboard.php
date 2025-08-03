@@ -2,9 +2,11 @@
 
 namespace App\Livewire;
 
+use Exception;
+use DateTimeZone;
+use Carbon\Carbon;
 use App\Models\Trip;
 use App\Models\Vehicle;
-use Exception;
 use Livewire\Component;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -26,9 +28,14 @@ class Dashboard extends Component {
         try {
             if ($trip = Trip::where([['vehicle_id', '=', $vehicle_id], ['is_closed', '=', false]])->with('user')->first())
                 throw new Exception('Gépjárműt már lefoglalta: ' . $trip->user->name);
+
+            $localDate = Carbon::parse($this->pickup_time, new DateTimeZone('Europe/Budapest'));
+            $utcDate = $localDate->copy()->timezone('UTC');
+
             $trip = Trip::create([
                 'user_id' => auth()->user()->id,
                 'vehicle_id' => $vehicle_id,
+                'pickup_at' => $utcDate
             ]);
 
             $trip->save();
@@ -65,8 +72,7 @@ class Dashboard extends Component {
     }
 
     public function mount() {
-        date_default_timezone_set("Europe/Budapest");
-        $this->pickup_time = date("Y-m-d H:i");
+        $this->pickup_time = Carbon::now('Europe/Budapest')->format('Y-m-d H:i');
         $this->user_vehicles = Vehicle::with([
             'users',
             'trips' =>

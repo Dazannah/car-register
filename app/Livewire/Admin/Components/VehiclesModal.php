@@ -52,6 +52,7 @@ class VehiclesModal extends Component {
 
             $this->dispatch('vehicle_save_success');
             $this->dispatch('vehicle_delete_success');
+            $this->dispatch('close_vehicle_modal');
             $this->dispatch('remount_vehicles');
 
             Flux::modals()->close();

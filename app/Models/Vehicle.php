@@ -30,4 +30,8 @@ class Vehicle extends Model {
     public function status() {
         return $this->belongsTo(Status::class);
     }
+
+    public function trips() {
+        return $this->hasMany(Trip::class);
+    }
 }

@@ -1,16 +1,16 @@
 <div x-data="{ show: false, method_name: '', modal_title: '' }" x-init="$watch('show_new', value => {
     show = value
-    method_name = 'create_vehicles'
+    method_name = 'create_vehicle'
     modal_title = 'Gépjármű hozzáadása'
 
-    if (value) $dispatch('create_user')
+    if (value) $dispatch('create_vehicle_load')
 });
 $watch('show_update', value => {
     show = value
-    method_name = 'update_vehicles'
+    method_name = 'update_vehicle'
     modal_title = 'Gépjármű módosítása'
 
-    if (value) $dispatch('update_vehicles', [update_vehicles_id])
+    if (value) $dispatch('update_vehicle_load', [update_vehicle_id])
 });
 $watch('show', value => {
     if (!value) {
@@ -33,13 +33,15 @@ $watch('show', value => {
                     autocomplete="form.licence_plate" placeholder="Rendszám" />
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <flux:input wire:model="form.vehicle_type" :label="__('Típus')" type="text" required
-                    autocomplete="form.vehicle_type" placeholder="Típus" />
+                <flux:input wire:model="form.type" :label="__('Típus')" type="text" required
+                    autocomplete="form.type" placeholder="Típus" />
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <flux:select wire:model="status">
-                    <flux:select.option>Aktív</flux:select.option>
-                    <flux:select.option>Inaktív</flux:select.option>
+                <flux:select wire:model="form.status_id">
+                    @foreach ($statuses as $status)
+                        <flux:select.option value="{{ $status->id }}">{{ $status->display_name }}
+                        </flux:select.option>
+                    @endforeach
                 </flux:select>
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
@@ -48,16 +50,51 @@ $watch('show', value => {
             </div>
         </div>
         <div class="p-6 pt-0">
+            <div class="flex justify-center items-center w-full">
+                <x-action-message-success class="me-3" on="vehicle_save_success">
+                    {{ __('Sikeres mentés') }}
+                </x-action-message-success>
+
+                @if (!empty($error_message))
+                    <flux:text color="red" class="mt-2">{{ $error_message }}</flux:text>
+                @endif
+            </div>
+
             <div class="flex space-x-2">
-                <flux:button x-show="method_name == 'update_vehicles'"
-                    @click.prevent="update_vehicles, [update_vehicles_id]" variant="danger"
-                    class="w-full hover:cursor-pointer">
-                    {{ __('Törlés') }}
-                </flux:button>
-                <flux:button @click.prevent="method_name" color="green" variant="primary"
-                    class="w-full hover:cursor-pointer">
-                    {{ __('Mentés') }}
-                </flux:button>
+                <div class="flex justify-center items-center h-full w-full">
+                    <flux:icon.loading wire:loading />
+
+                    <flux:modal.trigger name="confirm-vehicle-delete">
+                        <flux:button wire:loading.remove x-show="method_name == 'update_vehicle'" variant="danger"
+                            class="w-full hover:cursor-pointer">
+                            {{ __('Törlés') }}
+                        </flux:button>
+                    </flux:modal.trigger>
+
+                    <flux:modal name="confirm-vehicle-delete" class="md:w-96">
+                        <div class="space-y-6">
+                            <div>
+                                <flux:heading size="lg">Biztos törlöd?</flux:heading>
+                            </div>
+                            <div class="flex">
+                                <flux:spacer />
+                                <div class="flex justify-center items-center h-full w-full">
+                                    <flux:icon.loading wire:loading />
+                                </div>
+                                <flux:button wire:loading.remove
+                                    @click.prevent="$wire['delete_vehicle'](update_vehicle_id)" variant="danger"
+                                    class="w-full hover:cursor-pointer">
+                                    {{ __('Törlés') }}
+                                </flux:button>
+                            </div>
+                        </div>
+                    </flux:modal>
+
+                    <flux:button wire:loading.remove @click.prevent="$wire[method_name]()" color="green"
+                        variant="primary" class="w-full hover:cursor-pointer">
+                        {{ __('Mentés') }}
+                    </flux:button>
+                </div>
             </div>
         </div>
     </div>

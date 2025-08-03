@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Casts\CustomPrimaryKey;
 use App\Casts\CustomString;
+use App\Casts\LicencePlate;
+use App\Casts\Vin;
 use Illuminate\Database\Eloquent\Model;
 
 class Vehicle extends Model {
@@ -15,13 +17,17 @@ class Vehicle extends Model {
     ];
 
     protected $casts = [
-        'licence_plate' => CustomString::class,
+        'licence_plate' => LicencePlate::class,
         'type' => CustomString::class,
-        'vin' => CustomString::class,
+        'vin' => Vin::class,
         'status_id' => CustomPrimaryKey::class
     ];
 
     public function users() {
         return $this->belongsToMany(User::class);
+    }
+
+    public function status() {
+        return $this->belongsTo(Status::class);
     }
 }

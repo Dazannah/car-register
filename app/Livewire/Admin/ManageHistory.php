@@ -19,7 +19,14 @@ class ManageHistory extends Component {
     #[URL(as: 'licence_plate')]
     public string $filter_licence_plate;
 
-    protected $listeners = ['reset_history_filter'];
+    protected $listeners = ['reset_history_filter', 'refresh_manage_history_mount'];
+
+    public function mount() {
+    }
+
+    public function refresh_manage_history_mount() {
+        $this->mount();
+    }
 
     public function reset_history_filter() {
         $this->reset('filter_name', 'filter_pickup_at', 'filter_return_at', 'filter_licence_plate');

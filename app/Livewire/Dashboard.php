@@ -26,11 +26,16 @@ class Dashboard extends Component {
 
     public function pickup_vehicle($vehicle_id) {
         try {
+            $localDate = Carbon::parse($this->pickup_time, new DateTimeZone('Europe/Budapest'));
+            $utcDate = $localDate->copy()->timezone('UTC');
+
             if ($trip = Trip::where([['vehicle_id', '=', $vehicle_id], ['is_closed', '=', false]])->with('user')->first())
                 throw new Exception('Gépjárműt már lefoglalta: ' . $trip->user->name);
 
-            $localDate = Carbon::parse($this->pickup_time, new DateTimeZone('Europe/Budapest'));
-            $utcDate = $localDate->copy()->timezone('UTC');
+            if ($trip = Trip::where([['vehicle_id', '=', $vehicle_id], ['pickup_at', '<=', $utcDate], ['return_at', '>=', $utcDate]])->first())
+                throw new Exception('A gépjármű ebben az időpontban nem volt elérhető');
+
+
 
             $trip = Trip::create([
                 'user_id' => auth()->user()->id,

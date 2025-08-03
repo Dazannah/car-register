@@ -26,50 +26,54 @@ window.addEventListener('user_delete_success', () => {
     <div data-dialog="dialog"
         class="relative mx-auto flex w-full max-w-[24rem] flex-col rounded-xl bg-white dark:bg-neutral-900 bg-clip-border text-slate-700 shadow-md">
         <div class="flex flex-col p-6">
-            <div class="flex items-center justify-between">
-                <flux:heading size="xl" x-text="modal_title"></flux:heading>
-                <flux:button class="cursor-pointer" @click.prevent="show = false" icon="x-mark" variant="subtle" />
-            </div>
+            <form>
+                <div class="flex items-center justify-between">
+                    <flux:heading size="xl" x-text="modal_title"></flux:heading>
+                    <flux:button class="cursor-pointer" @click.prevent="show = false" icon="x-mark" variant="subtle" />
+                </div>
 
-            <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <flux:input wire:model="form.name" :label="__('Név')" type="text" autofocus placeholder="Név" />
-            </div>
-            <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <flux:input wire:model="form.username" :label="__('Felhasználónév')" type="text"
-                    placeholder="Felhasználónév" />
-            </div>
-            <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <flux:field variant="inline">
-                    <flux:checkbox wire:model="form.is_admin" />
-                    <flux:label>admin</flux:label>
-                    <flux:error name="form.is_admin" />
-                </flux:field>
-            </div>
-            <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <flux:select wire:model="form.status_id">
-                    @foreach ($statuses as $status)
-                        <flux:select.option value="{{ $status->id }}">{{ $status->display_name }}
-                        </flux:select.option>
-                    @endforeach
-                </flux:select>
-            </div>
-            <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <flux:input wire:model="form.password" :label="__('Jelszó')" type="password" placeholder="Jelszó" />
-            </div>
-            <div class="w-full max-w-sm min-w-[200px] mt-4">
-                <flux:input wire:model="form.password_confirmed" :label="__('Jelszó megerősítése')" type="password"
-                    required placeholder="Jelszó megerősítése" />
-            </div>
-            <div class="w-full max-w-sm min-w-[200px] max-h-[30vh] mt-4 overflow-y-scroll">
-                <flux:checkbox.group wire:model="form.vehicle_ids" label="Gépjárművek hozzárendelése">
-                    <flux:input wire:model.live="filter_licence_plate" class="mb-2 sticky top-0 dark:bg-neutral-800"
-                        type="text" placeholder="Rendszám keresése" />
-                    @foreach ($vehicles as $vehicle)
-                        <flux:checkbox value="{{ $vehicle->id }}" label="{{ $vehicle->licence_plate }}"
-                            description="{{ $vehicle->type }}" />
-                    @endforeach
-                </flux:checkbox.group>
-            </div>
+                <div class="w-full max-w-sm min-w-[200px] mt-4">
+                    <flux:input wire:model="form.name" :label="__('Név')" type="text" autofocus
+                        placeholder="Név" />
+                </div>
+                <div class="w-full max-w-sm min-w-[200px] mt-4">
+                    <flux:input wire:model="form.username" autocomplete="username" :label="__('Felhasználónév')"
+                        type="text" placeholder="Felhasználónév" />
+                </div>
+                <div class="w-full max-w-sm min-w-[200px] mt-4">
+                    <flux:field variant="inline">
+                        <flux:checkbox wire:model="form.is_admin" />
+                        <flux:label>admin</flux:label>
+                        <flux:error name="form.is_admin" />
+                    </flux:field>
+                </div>
+                <div class="w-full max-w-sm min-w-[200px] mt-4">
+                    <flux:select wire:model="form.status_id">
+                        @foreach ($statuses as $status)
+                            <flux:select.option value="{{ $status->id }}">{{ $status->display_name }}
+                            </flux:select.option>
+                        @endforeach
+                    </flux:select>
+                </div>
+                <div class="w-full max-w-sm min-w-[200px] mt-4">
+                    <flux:input wire:model="form.password" autocomplete="new-password" :label="__('Jelszó')"
+                        type="password" placeholder="Jelszó" />
+                </div>
+                <div class="w-full max-w-sm min-w-[200px] mt-4">
+                    <flux:input wire:model="form.password_confirmed" autocomplete="new-password"
+                        :label="__('Jelszó megerősítése')" type="password" required placeholder="Jelszó megerősítése" />
+                </div>
+                <div class="w-full max-w-sm min-w-[200px] max-h-[30vh] mt-4 overflow-y-scroll">
+                    <flux:checkbox.group wire:model="form.vehicle_ids" label="Gépjárművek hozzárendelése">
+                        <flux:input wire:model.live="filter_licence_plate" class="mb-2 sticky top-0 dark:bg-neutral-800"
+                            type="text" placeholder="Rendszám keresése" />
+                        @foreach ($vehicles as $vehicle)
+                            <flux:checkbox value="{{ $vehicle->id }}" label="{{ $vehicle->licence_plate }}"
+                                description="{{ $vehicle->type }}" />
+                        @endforeach
+                    </flux:checkbox.group>
+                </div>
+            </form>
         </div>
         <div class="p-6 pt-0">
             <div class="flex justify-center items-center w-full">

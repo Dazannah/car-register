@@ -2,7 +2,9 @@
 
 namespace App\Livewire;
 
+use Carbon\Carbon;
 use App\Models\Trip;
+use DateTimeZone;
 use Livewire\Component;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
@@ -20,7 +22,7 @@ class History extends Component {
     protected $listeners = ['reset_history_filter'];
 
     public function reset_history_filter() {
-        $this->reset('filter_name', 'filter_pickup_at', 'filter_return_at', 'filter_licence_plate');
+        $this->reset('filter_pickup_at', 'filter_return_at', 'filter_licence_plate');
         $this->resetPage();
     }
 
@@ -28,12 +30,20 @@ class History extends Component {
         return Trip::with(['vehicle'])->where('user_id', auth()->user()->id)->orderBy('return_at', 'desc')->when(
             isset($this->filter_pickup_at) && !empty($this->filter_pickup_at),
             function ($query) {
-                return $query->where('pickup_at', 'LIKE', "%$this->filter_pickup_at%");
+                $localDate = Carbon::parse($this->filter_pickup_at, new DateTimeZone('Europe/Budapest'));
+                $startUtc = $localDate->copy()->startOfDay()->timezone('UTC');
+                $endUtc = $localDate->copy()->endOfDay()->timezone('UTC');
+
+                return $query->whereBetween('pickup_at', [$startUtc, $endUtc]);
             }
         )->when(
             isset($this->filter_return_at) && !empty($this->filter_return_at),
             function ($query) {
-                return $query->where([['is_closed', '=', true], ['return_at', 'LIKE', "%$this->filter_return_at%"]]);
+                $localDate = Carbon::parse($this->filter_return_at, new DateTimeZone('Europe/Budapest'));
+                $startUtc = $localDate->copy()->startOfDay()->timezone('UTC');
+                $endUtc = $localDate->copy()->endOfDay()->timezone('UTC');
+
+                return $query->where('is_closed', '=', true)->whereBetween('pickup_at', [$startUtc, $endUtc]);
             }
         )->when(
             isset($this->filter_licence_plate) && !empty($this->filter_licence_plate),

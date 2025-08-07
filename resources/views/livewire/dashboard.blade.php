@@ -86,7 +86,7 @@
                 </div>
 
                 <div class="flex justify-center mb-2">
-                    <flux:select wire:model="booking_vehicle_id">
+                    <flux:select wire:model.live="booking_vehicle_id">
                         @foreach ($user_vehicles as $user_vehicle)
                             <flux:select.option value="{{ $user_vehicle->id }}">
                                 {{ "$user_vehicle->licence_plate - $user_vehicle->type" }}
@@ -97,6 +97,27 @@
 
                 <div class="flex flex-col justify-center gap-2 mb-2">
                     <flux:input wire:model.live="booking_start" type="datetime-local" label="Felvétel időpontja" />
+                    @if ($interfere_with_start)
+                        <div
+                            class="relative aspect-auto overflow-hidden overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900">
+                            <div class="p-3 text-center">
+                                A gépjármű ezzel a kezdéssel nem elérhető.<br />
+                                Foglalás adatai:<br />
+                                Név: {{ $interfere_with_start->user->name }}
+
+                                <flux:input
+                                    value="{{ $interfere_with_start->pickup_at->setTimezone('Europe/Budapest')->format('Y-m-d\TH:i') }}"
+                                    type="datetime-local" label="Felvétel" disabled />
+                                @if ($interfere_with_start->pickup_at != $interfere_with_start->return_at)
+                                    <flux:input
+                                        value="{{ $interfere_with_start->return_at->setTimezone('Europe/Budapest')->format('Y-m-d\TH:i') }}"
+                                        type="datetime-local" label="Leadás" disabled />
+                                @endif
+                            </div>
+                        </div>
+                    @elseif($is_booking_start_available)
+                        Elérhető
+                    @endif
                     <flux:input wire:model.live="booking_end" type="datetime-local" label="Leadás időpontja" />
                 </div>
 

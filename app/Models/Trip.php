@@ -13,6 +13,7 @@ class Trip extends Model {
     protected $fillable = [
         'user_id',
         'vehicle_id',
+        'reservation_type_id',
         'pickup_at',
         'return_at',
         'is_closed'
@@ -21,6 +22,7 @@ class Trip extends Model {
     protected $casts = [
         'user_id' => CustomPrimaryKey::class,
         'vehicle_id' => CustomPrimaryKey::class,
+        'reservation_type_id' => CustomPrimaryKey::class,
         'is_closed' => CustomBoolean::class
     ];
 
@@ -30,5 +32,9 @@ class Trip extends Model {
 
     public function vehicle() {
         return $this->belongsTo(Vehicle::class);
+    }
+
+    public function reservationType() {
+        return $this->belongsTo(ReservationType::class);
     }
 }

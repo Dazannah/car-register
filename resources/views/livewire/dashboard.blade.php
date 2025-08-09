@@ -26,7 +26,7 @@
                         </p>
                     </div>
                     <div class="flex justify-center mb-4">
-                        @if (count($user_vehicle->trips) > 0)
+                        @if (count($user_vehicle->trips->where('pickup_at', '<=', $this->time_now_utc)) > 0)
                             <div>
                                 <h5 class="text-2xl text-red-600 font-semibold">
                                     Foglalt
@@ -37,6 +37,15 @@
                                 <flux:input type="datetime-local"
                                     value="{{ $user_vehicle->trips[0]->pickup_at->setTimezone('Europe/Budapest')->format('Y-m-d\TH:i') }}"
                                     disabled />
+
+                                @if ($user_vehicle->trips[0]->reservationType->technical_name == 'pre')
+                                    <flux:input type="datetime-local" label="Leadás időpontja"
+                                        value="{{ $user_vehicle->trips[0]->return_at->setTimezone('Europe/Budapest')->format('Y-m-d\TH:i') }}"
+                                        disabled />
+                                @endif
+
+
+
                             </div>
                         @else
                             <div>
@@ -55,8 +64,10 @@
                             <flux:icon.loading wire:loading />
                         </div>
                         <div wire:loading.remove>
-                            @if (count($user_vehicle->trips) > 0)
-                                @if ($user_vehicle->trips[0]->user_id == auth()->user()->id)
+                            @if (count($user_vehicle->trips->where('pickup_at', '<=', $this->time_now_utc)) > 0)
+                                @if (
+                                    $user_vehicle->trips[0]->user_id == auth()->user()->id &&
+                                        $user_vehicle->trips[0]->reservationType->technical_name == 'instant')
                                     <flux:button
                                         @click.prevent="$wire['return_vehicle']({{ $user_vehicle->trips[0]->id }})"
                                         variant="primary" color="red" class="w-full hover:cursor-pointer">
@@ -76,6 +87,50 @@
                 </div>
             </div>
         @endforeach
-
     </div>
+
+    <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+        @foreach ($user_open_underway_trips as $user_open_underway_trip)
+            <div
+                class="relative aspect-auto overflow-hidden overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900">
+                <div class="p-3 text-center">
+                    <div class="flex justify-center mb-4">
+                        <h5 class="text-2xl font-semibold">
+                            {{ $user_open_underway_trip->vehicle->licence_plate }}
+                        </h5>
+                    </div>
+                    <div class="flex justify-center mb-2">
+                        <p class="block leading-normal font-light mb-4 max-w-lg">
+                            {{ $user_open_underway_trip->vehicle->type }}
+                        </p>
+                    </div>
+                    <div class="flex justify-center mb-2">
+                        <flux:input type="datetime-local" label="Felvétel időpontja"
+                            value="{{ $user_open_underway_trip->pickup_at->setTimezone('Europe/Budapest')->format('Y-m-d\TH:i') }}"
+                            disabled />
+
+                    </div>
+                    <div class="flex justify-center mb-2">
+                        <flux:input type="datetime-local" label="Leadás időpontja"
+                            value="{{ $user_open_underway_trip->return_at->setTimezone('Europe/Budapest')->format('Y-m-d\TH:i') }}"
+                            disabled />
+                    </div>
+                    <div class="text-center">
+                        <div class="flex justify-center items-center w-full">
+                            <flux:icon.loading wire:loading />
+                        </div>
+                        <div wire:loading.remove>
+                            <flux:button
+                                @click.prevent="$wire['return_preregistered_vehicle']({{ $user_open_underway_trip->id }})"
+                                variant="primary" color="red" class="w-full hover:cursor-pointer">
+                                <flux:icon.warehouse />
+                                {{ __('Leadás') }}
+                            </flux:button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+
 </div>

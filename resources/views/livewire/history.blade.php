@@ -5,7 +5,7 @@
             class="relative mx-4 mt-4 overflow-hidden text-slate-700 bg-white dark:bg-neutral-900 rounded-none bg-clip-border">
             <div class="flex items-center justify-between ">
                 <div>
-                    <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-200">Saját előzmények</h3>
+                    <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-200">Előzményeim</h3>
                 </div>
             </div>
 

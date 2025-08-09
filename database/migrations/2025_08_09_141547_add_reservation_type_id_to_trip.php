@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void {
         Schema::table('trips', function (Blueprint $table) {
-            $table->foreignId('reservation_types')->default(1)->constrained();
+            $table->foreignId('reservation_type_id')->default(1)->constrained();
         });
     }
 

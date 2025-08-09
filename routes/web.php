@@ -7,6 +7,7 @@ use App\Livewire\Admin\Users;
 use App\Http\Middleware\IsAdmin;
 use App\Livewire\Admin\Vehicles;
 use App\Livewire\Admin\ManageHistory;
+use App\Livewire\Reservations;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -24,6 +25,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', Dashboard::class)
         ->name('dashboard');
+
+    Route::get('/reservations', Reservations::class)
+        ->name('reservations');
 
     Route::get('/history', History::class)
         ->name('history');

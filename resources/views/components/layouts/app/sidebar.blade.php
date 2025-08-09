@@ -19,9 +19,14 @@
                 <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                     wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
 
+                <flux:navlist.item icon="calendar" :href="route('reservations')"
+                    :current="request()->routeIs('reservations')" wire:navigate>
+                    {{ __('Foglalások') }}
+                </flux:navlist.item>
+
                 <flux:navlist.item icon="book-open-text" :href="route('history')"
                     :current="request()->routeIs('history')" wire:navigate>
-                    {{ __('Előzmények') }}
+                    {{ __('Előzményeim') }}
                 </flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>

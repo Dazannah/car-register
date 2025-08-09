@@ -10,6 +10,8 @@ use Exception;
 
 class TripForm extends Form {
     public string|null $name;
+    public int|null $reservation_type_id;
+    public bool|null $is_closed;
     public string|null $pickup_at;
     public string|null $return_at;
     public string|null $licence_plate;
@@ -32,15 +34,17 @@ class TripForm extends Form {
     }
 
     public function load_trip($trip_id) {
-        $this->trip = Trip::where('id', $trip_id)->with(['user', 'vehicle'])->orderby('return_at', 'desc')->first();
+        $this->trip = Trip::with(['reservationType'])->where('id', $trip_id)->with(['user', 'vehicle'])->orderby('return_at', 'desc')->first();
         $this->name = $this->trip->user->name;
 
         $utc_pickup_at = Carbon::parse($this->trip->pickup_at, new DateTimeZone('UTC'));
         $local_pickup_at = $utc_pickup_at->copy()->timezone('Europe/Budapest');
 
         $this->pickup_at = $local_pickup_at;
+        $this->reservation_type_id = $this->trip->reservationType->id;
+        $this->is_closed = $this->trip->is_closed;
 
-        if ($this->trip->is_closed) {
+        if ($this->trip->is_closed || $this->trip->reservationType->technical_name === 'pre') {
             $utc_return_at = Carbon::parse($this->trip->return_at, new DateTimeZone('UTC'));
             $local_return_at = $utc_return_at->copy()->timezone('Europe/Budapest');
 
@@ -70,6 +74,8 @@ class TripForm extends Form {
             $this->trip->is_closed = false;
         }
 
+        $this->trip->reservation_type_id = $this->reservation_type_id;
+        $this->trip->is_closed = $this->is_closed;
         $this->trip->timestamps = false;
         $this->trip->save();
     }

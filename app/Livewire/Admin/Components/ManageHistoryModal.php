@@ -6,11 +6,14 @@ use Exception;
 use Flux\Flux;
 use Livewire\Component;
 use App\Livewire\Forms\TripForm;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Validation\ValidationException;
 
 class ManageHistoryModal extends Component {
 
     public TripForm $form;
+
+    public Collection $reservation_types;
 
     public string|null $success_message;
     public string|null $error_message;

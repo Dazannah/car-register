@@ -4,11 +4,15 @@ namespace App\Livewire\Admin;
 
 use App\Models\Trip;
 use Livewire\Component;
-use Livewire\WithPagination;
 use Livewire\Attributes\Url;
+use Livewire\WithPagination;
+use App\Models\ReservationType;
+use Illuminate\Database\Eloquent\Collection;
 
 class ManageHistory extends Component {
     use WithPagination;
+
+    public Collection $reservation_types;
 
     #[URL(as: 'name')]
     public string $filter_name;
@@ -18,10 +22,13 @@ class ManageHistory extends Component {
     public string $filter_return_at;
     #[URL(as: 'licence_plate')]
     public string $filter_licence_plate;
+    #[URL(as: 'reservation_type')]
+    public string $filter_reservation_type_id;
 
     protected $listeners = ['reset_history_filter', 'refresh_manage_history_mount'];
 
     public function mount() {
+        $this->reservation_types = ReservationType::all();
     }
 
     public function refresh_manage_history_mount() {
@@ -34,11 +41,18 @@ class ManageHistory extends Component {
     }
 
     public function filter_trips() {
-        return Trip::with(['user', 'vehicle'])->orderBy('return_at', 'desc')->when(
+        return Trip::with(['user', 'vehicle', 'reservationType'])->orderBy('return_at', 'desc')->when(
             isset($this->filter_name) && !empty($this->filter_name),
             function ($query) {
                 return $query->whereHas('user', function ($inside_query) {
                     return $inside_query->where('name', 'LIKE', "%$this->filter_name%");
+                });
+            }
+        )->when(
+            isset($this->filter_licence_plate) && !empty($this->filter_licence_plate),
+            function ($query) {
+                return $query->whereHas('vehicle', function ($inside_query) {
+                    return $inside_query->where('licence_plate', 'LIKE', "%$this->filter_licence_plate%");
                 });
             }
         )->when(
@@ -52,10 +66,10 @@ class ManageHistory extends Component {
                 return $query->where([['is_closed', '=', true], ['return_at', 'LIKE', "%$this->filter_return_at%"]]);
             }
         )->when(
-            isset($this->filter_licence_plate) && !empty($this->filter_licence_plate),
+            isset($this->filter_reservation_type_id) && !empty($this->filter_reservation_type_id),
             function ($query) {
-                return $query->whereHas('vehicle', function ($inside_query) {
-                    return $inside_query->where('licence_plate', 'LIKE', "%$this->filter_licence_plate%");
+                return $query->whereHas('reservationType', function ($inside_query) {
+                    return $inside_query->where('id', '=', $this->filter_reservation_type_id);
                 });
             }
         )->paginate(10);

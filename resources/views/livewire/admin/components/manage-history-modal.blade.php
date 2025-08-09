@@ -28,6 +28,24 @@ window.addEventListener('close_history_modal', () => {
                     <flux:input wire:model="form.name" :label="__('Név')" type="text" disabled />
                 </div>
             </div>
+
+            <div class="w-full max-w-sm min-w-[200px] mt-4">
+                <flux:select wire:model="form.reservation_type_id">
+                    @foreach ($reservation_types as $reservation_type)
+                        <flux:select.option value="{{ $reservation_type->id }}">{{ $reservation_type->display_name }}
+                        </flux:select.option>
+                    @endforeach
+                </flux:select>
+            </div>
+
+            <div class="w-full max-w-sm min-w-[200px] mt-4">
+                <flux:field variant="inline">
+                    <flux:checkbox wire:model="form.is_closed" />
+                    <flux:label>lezárt</flux:label>
+                    <flux:error name="form.is_closed" />
+                </flux:field>
+            </div>
+
             <div class="w-full max-w-sm min-w-[200px] mt-4">
                 <flux:field>
                     <flux:label>Felvéve</flux:label>

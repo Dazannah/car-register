@@ -16,12 +16,14 @@ class ManageHistory extends Component {
 
     #[URL(as: 'name')]
     public string $filter_name;
+    #[URL(as: 'licence_plate')]
+    public string $filter_licence_plate;
+    #[URL(as: 'is_closed')]
+    public bool $filter_is_closed;
     #[URL(as: 'pickup_at')]
     public string $filter_pickup_at;
     #[URL(as: 'return_at')]
     public string $filter_return_at;
-    #[URL(as: 'licence_plate')]
-    public string $filter_licence_plate;
     #[URL(as: 'reservation_type')]
     public string $filter_reservation_type_id;
 
@@ -41,7 +43,7 @@ class ManageHistory extends Component {
     }
 
     public function filter_trips() {
-        return Trip::with(['user', 'vehicle', 'reservationType'])->orderBy('return_at', 'desc')->when(
+        return Trip::with(['user', 'vehicle', 'reservationType'])->when(
             isset($this->filter_name) && !empty($this->filter_name),
             function ($query) {
                 return $query->whereHas('user', function ($inside_query) {
@@ -54,6 +56,11 @@ class ManageHistory extends Component {
                 return $query->whereHas('vehicle', function ($inside_query) {
                     return $inside_query->where('licence_plate', 'LIKE', "%$this->filter_licence_plate%");
                 });
+            }
+        )->when(
+            isset($this->filter_is_closed) && $this->filter_is_closed == true,
+            function ($query) {
+                return $query->where('is_closed', '=', true);
             }
         )->when(
             isset($this->filter_pickup_at) && !empty($this->filter_pickup_at),
@@ -72,7 +79,7 @@ class ManageHistory extends Component {
                     return $inside_query->where('id', '=', $this->filter_reservation_type_id);
                 });
             }
-        )->paginate(10);
+        )->orderBy('return_at', 'desc')->paginate(10);
     }
 
     public function render() {

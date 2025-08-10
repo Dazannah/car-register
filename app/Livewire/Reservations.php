@@ -26,7 +26,6 @@ class Reservations extends Component {
 
     public int|null $booking_vehicle_id;
     public Trip|null $interfering_trip;
-    private IDateChecker $date_checker_service;
 
     public string|null $success_message;
     public string|null $error_message;
@@ -61,7 +60,7 @@ class Reservations extends Component {
             $this->interfere_with_start = Trip::with(['user'])->where([
                 ['vehicle_id', '=', $this->booking_vehicle_id],
                 ['pickup_at', '<=', $utc_booking_start],
-                ['return_at', '>', $utc_booking_start]
+                ['return_at', '>=', $utc_booking_start]
             ])->first();
 
             if (isset($this->interfere_with_start))
@@ -78,7 +77,7 @@ class Reservations extends Component {
             $this->interfere_with_end = Trip::with(['user'])->where([
                 ['vehicle_id', '=', $this->booking_vehicle_id],
                 ['pickup_at', '<=', $utc_booking_end],
-                ['return_at', '>', $utc_booking_end]
+                ['return_at', '>=', $utc_booking_end]
             ])->first();
 
             if (isset($this->interfere_with_end))

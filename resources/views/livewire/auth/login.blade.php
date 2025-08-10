@@ -37,6 +37,18 @@ new #[Layout('components.layouts.auth')] class extends Component {
             ]);
         }
 
+        if (auth()->user()->status_id == 2) {
+            RateLimiter::hit($this->throttleKey());
+
+            auth()->logout();
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+
+            throw ValidationException::withMessages([
+                'username' => __('Fiók inaktiválva van.'),
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 

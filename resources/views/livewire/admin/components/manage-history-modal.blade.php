@@ -48,14 +48,12 @@ window.addEventListener('close_history_modal', () => {
 
             <div class="w-full max-w-sm min-w-[200px] mt-4">
                 <flux:field>
-                    <flux:label>Felvéve</flux:label>
-                    <input wire:model="form.pickup_at" type="datetime-local">
+                    <flux:input wire:model="form.pickup_at" type="datetime-local" label="Felvéve" />
                 </flux:field>
             </div>
             <div class="w-full max-w-sm min-w-[200px] mt-4">
                 <flux:field>
-                    <flux:label>Leadva</flux:label>
-                    <input wire:model="form.return_at" type="datetime-local">
+                    <flux:input wire:model="form.return_at" type="datetime-local" label="Leadva" />
                 </flux:field>
             </div>
 

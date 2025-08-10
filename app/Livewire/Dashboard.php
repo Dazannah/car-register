@@ -47,7 +47,7 @@ class Dashboard extends Component {
             'users',
             'trips' =>
             function ($query) {
-                $query->where('is_closed', false);
+                $query->where([['is_closed', false], ['reservation_type_id', '=', 1]]);
             }
         ])->whereHas(
             'users',
@@ -64,7 +64,7 @@ class Dashboard extends Component {
     public function pickup_vehicle($vehicle_id) {
         try {
             $localDate = Carbon::parse($this->pickup_time, new DateTimeZone('Europe/Budapest'));
-            $utcDate = $localDate->copy()->timezone('UTC');
+            $utcDate = $localDate->copy()->timezone('UTC')->format('Y-m-d H:i');
 
             if ($trip = Trip::where([['vehicle_id', '=', $vehicle_id], ['pickup_at', '<', $this->time_now_utc], ['is_closed', '=', false]])->with('user')->first())
                 throw new Exception('Gépjárműt már lefoglalta: ' . $trip->user->name);
@@ -72,10 +72,13 @@ class Dashboard extends Component {
             if ($trip = Trip::where([['vehicle_id', '=', $vehicle_id], ['pickup_at', '<=', $utcDate], ['return_at', '>=', $utcDate], ['is_closed', '=', false]])->first())
                 throw new Exception('A gépjármű ebben az időpontban nem volt elérhető');
 
+            $return_at = $localDate->copy()->endOfDay()->timezone('UTC');
+
             $trip = Trip::create([
                 'user_id' => auth()->user()->id,
                 'vehicle_id' => $vehicle_id,
-                'pickup_at' => $utcDate
+                'pickup_at' => $utcDate,
+                'return_at' => $return_at
             ]);
 
             $trip->save();
@@ -96,6 +99,7 @@ class Dashboard extends Component {
             if ($trip = Trip::where([['id', '=', $trip_id], ['user_id', '=', auth()->user()->id]])->first()) {
                 $trip->is_closed = true;
 
+                $trip->return_at = Carbon::now(new DateTimeZone('UTC'))->format('Y-m-d H:i');
                 $trip->save();
                 $this->mount();
 

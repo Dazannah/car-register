@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use DateTimeZone;
 use Carbon\Carbon;
 use App\Models\Trip;
 use App\Models\Vehicle;
@@ -13,12 +14,13 @@ class Reservations extends Component {
     public Collection $user_vehicles;
 
     public bool $is_booking_time_available = false;
+    public Trip|null $interfere_with_the_whole_time;
 
-    public $booking_start;
+    public string|null $booking_start;
     public bool $is_booking_start_available = false;
     public Trip|null $interfere_with_start;
 
-    public $booking_end;
+    public string|null $booking_end;
     public bool $is_booking_end_available = false;
     public Trip|null $interfere_with_end;
 
@@ -29,28 +31,114 @@ class Reservations extends Component {
     public string|null $success_message;
     public string|null $error_message;
 
+    protected $listeners = ['prebook_vehicle'];
+
     public function mount() {
         $this->get_user_vehicles();
-
-        if (count($this->user_vehicles) > 0)
-            $this->booking_vehicle_id = $this->user_vehicles[0]->id;
-
-        $this->check_if_booking_booking_start_available();
-        $this->check_if_booking_booking_end_available();
-        $this->check_if_booking_time_available();
     }
 
     public function boot(IDateChecker $date_checker_service) {
         $this->get_user_vehicles();
 
         $this->date_checker_service = $date_checker_service;
-        $this->error_message = null;
         $this->success_message = null;
+        $this->error_message = null;
         $this->interfering_trip = null;
+    }
 
-        $this->check_if_booking_booking_start_available();
-        $this->check_if_booking_booking_end_available();
+    public function updated($property_name) {
+        if ($property_name === 'booking_start' || $property_name === 'booking_end'  || $property_name === 'booking_vehicle_id') {
+            $this->check_if_start_available();
+            $this->check_if_end_available();
+            $this->check_if_booking_time_available();
+        }
+    }
+
+    public function check_if_start_available() {
+        if (isset($this->booking_start)) {
+            $utc_booking_start = Carbon::parse($this->booking_start, new DateTimeZone('Europe/Budapest'))->copy()->timezone('UTC');
+
+            $this->interfere_with_start = Trip::with(['user'])->where([
+                ['vehicle_id', '=', $this->booking_vehicle_id],
+                ['pickup_at', '<=', $utc_booking_start],
+                ['return_at', '>', $utc_booking_start]
+            ])->first();
+
+            if (isset($this->interfere_with_start))
+                $this->reset(['is_booking_start_available', 'is_booking_time_available']);
+            else
+                $this->is_booking_start_available = true;
+        }
+    }
+
+    public function check_if_end_available() {
+        if (isset($this->booking_end)) {
+            $utc_booking_end = Carbon::parse($this->booking_end, new DateTimeZone('Europe/Budapest'))->copy()->timezone('UTC');
+
+            $this->interfere_with_end = Trip::with(['user'])->where([
+                ['vehicle_id', '=', $this->booking_vehicle_id],
+                ['pickup_at', '<=', $utc_booking_end],
+                ['return_at', '>', $utc_booking_end]
+            ])->first();
+
+            if (isset($this->interfere_with_end))
+                $this->reset(['is_booking_end_available', 'is_booking_time_available']);
+            else
+                $this->is_booking_end_available = true;
+        }
+    }
+
+    public function check_if_booking_time_available() {
+        if ($this->is_booking_start_available &&  $this->is_booking_end_available) {
+            $utc_booking_start = Carbon::parse($this->booking_start, new DateTimeZone('Europe/Budapest'))->copy()->timezone('UTC');
+            $utc_booking_end = Carbon::parse($this->booking_end, new DateTimeZone('Europe/Budapest'))->copy()->timezone('UTC');
+
+            $this->interfere_with_the_whole_time = Trip::with(['user'])->where([
+                ['vehicle_id', '=', $this->booking_vehicle_id],
+                ['pickup_at', '>=', $utc_booking_start],
+                ['return_at', '<=', $utc_booking_end]
+            ])->first();
+
+            if (isset($this->interfere_with_the_whole_time))
+                $this->reset(['is_booking_time_available']);
+            else
+                $this->is_booking_time_available = !isset($this->interfere_with_start) &&  !isset($this->interfere_with_end);
+        }
+    }
+
+    public function prebook_vehicle() {
+        $this->check_if_start_available();
+        $this->check_if_end_available();
         $this->check_if_booking_time_available();
+
+        $utc_booking_start = Carbon::parse($this->booking_start, new DateTimeZone('Europe/Budapest'))->copy()->timezone('UTC')->format('Y-m-d H:i');
+        $utc_booking_end = Carbon::parse($this->booking_end, new DateTimeZone('Europe/Budapest'))->copy()->timezone('UTC')->format('Y-m-d H:i');
+
+        $trip = Trip::create([
+            'user_id' => auth()->user()->id,
+            'vehicle_id' => $this->booking_vehicle_id,
+            'pickup_at' => $utc_booking_start,
+            'return_at' => $utc_booking_end,
+            'reservation_type_id' => 2
+        ]);
+
+        $trip->save();
+        $this->mount();
+
+        $this->reset([
+            'booking_start',
+            'is_booking_start_available',
+            'interfere_with_start',
+            'booking_end',
+            'is_booking_end_available',
+            'interfere_with_end',
+            'booking_vehicle_id',
+            'interfering_trip',
+            'is_booking_time_available'
+        ]);
+
+        $this->success_message = 'Előfoglalás sikeres';
+        $this->dispatch('show_success');
     }
 
     public function get_user_vehicles() {
@@ -66,49 +154,6 @@ class Reservations extends Component {
                 return $query->where('id', auth()->user()->id);
             }
         )->get();
-    }
-
-    private function check_if_booking_booking_start_available() {
-        if (Carbon::parse($this->booking_start) <= Carbon::now()) {
-            $this->interfere_with_start = null;
-            $this->is_booking_start_available = false;
-            return;
-        }
-
-        if (!empty($this->booking_start) && !empty($this->booking_vehicle_id)) {
-            if ($trip = $this->date_checker_service->check_if_time_available($this->booking_end, $this->booking_vehicle_id)) {
-                $this->interfere_with_start = $trip;
-                $this->is_booking_start_available = false;
-            } else {
-                $this->interfere_with_start = null;
-                $this->is_booking_start_available = true;
-            }
-        }
-    }
-
-    private function check_if_booking_booking_end_available() {
-        if (Carbon::parse($this->booking_end) <= Carbon::now()) {
-            $this->interfere_with_end = null;
-            $this->is_booking_end_available = false;
-            return;
-        }
-
-        if (!empty($this->booking_end) && !empty($this->booking_vehicle_id))
-            if ($trip = $this->date_checker_service->check_if_time_available($this->booking_start, $this->booking_vehicle_id)) {
-                $this->interfere_with_end = $trip;
-                $this->is_booking_end_available = false;
-            } else {
-                $this->interfere_with_end = null;
-                $this->is_booking_end_available = true;
-            }
-    }
-
-
-    private function check_if_booking_time_available() {
-        if (Carbon::parse($this->booking_start) < Carbon::parse($this->booking_end))
-            $this->is_booking_time_available = $this->is_booking_start_available && $this->is_booking_end_available;
-        else
-            $this->is_booking_time_available = false;
     }
 
     public function render() {

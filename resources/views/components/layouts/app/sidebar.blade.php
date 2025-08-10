@@ -21,7 +21,7 @@
 
                 <flux:navlist.item icon="calendar" :href="route('reservations')"
                     :current="request()->routeIs('reservations')" wire:navigate>
-                    {{ __('Foglalások') }}
+                    {{ __('Előfoglalások') }}
                 </flux:navlist.item>
 
                 <flux:navlist.item icon="book-open-text" :href="route('history')"

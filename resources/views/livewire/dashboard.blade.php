@@ -34,18 +34,13 @@
                                 <p class="block leading-normal font-light mb-4 max-w-lg">
                                     Felvette: {{ $user_vehicle->trips[0]->user->name }}
                                 </p>
-                                <flux:input type="datetime-local"
+                                <flux:input type="datetime-local" label="Felvétel időpontja"
                                     value="{{ $user_vehicle->trips[0]->pickup_at->setTimezone('Europe/Budapest')->format('Y-m-d\TH:i') }}"
                                     disabled />
 
-                                @if ($user_vehicle->trips[0]->reservationType->technical_name == 'pre')
-                                    <flux:input type="datetime-local" label="Leadás időpontja"
-                                        value="{{ $user_vehicle->trips[0]->return_at->setTimezone('Europe/Budapest')->format('Y-m-d\TH:i') }}"
-                                        disabled />
-                                @endif
-
-
-
+                                <flux:input type="datetime-local" label="Leadás időpontja"
+                                    value="{{ $user_vehicle->trips[0]->return_at->setTimezone('Europe/Budapest')->format('Y-m-d\TH:i') }}"
+                                    disabled />
                             </div>
                         @else
                             <div>
@@ -88,8 +83,11 @@
             </div>
         @endforeach
     </div>
-
+    <div>
+        <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-200">Folyamatban lévő előfoglalások</h3>
+    </div>
     <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+
         @foreach ($user_open_underway_trips as $user_open_underway_trip)
             <div
                 class="relative aspect-auto overflow-hidden overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900">

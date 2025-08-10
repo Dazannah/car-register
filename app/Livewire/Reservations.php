@@ -99,7 +99,10 @@ class Reservations extends Component {
                 ['return_at', '<=', $utc_booking_end]
             ])->first();
 
-            if (isset($this->interfere_with_the_whole_time))
+            if ($utc_booking_end < $utc_booking_start) {
+                $this->error_message = "A leadás időpontja nem lehet hamarabb mint a felvétel.";
+                $this->reset(['is_booking_time_available']);
+            } elseif (isset($this->interfere_with_the_whole_time))
                 $this->reset(['is_booking_time_available']);
             else
                 $this->is_booking_time_available = !isset($this->interfere_with_start) &&  !isset($this->interfere_with_end);

@@ -43,11 +43,13 @@ class Dashboard extends Component {
     }
 
     public function get_user_vehicles() {
+        $now = Carbon::now(new DateTimeZone('UTC'))->format('Y-m-d H:i');
+
         $this->user_vehicles = Vehicle::with([
             'users',
             'trips' =>
-            function ($query) {
-                $query->where([['is_closed', false], ['reservation_type_id', '=', 1]]);
+            function ($query) use ($now) {
+                $query->where('is_closed', false)->where([['pickup_at', '<=', $now], ['return_at', '>=', $now]]);
             }
         ])->whereHas(
             'users',
@@ -58,7 +60,7 @@ class Dashboard extends Component {
     }
 
     public function get_open_underway_trips() {
-        $this->user_open_underway_trips = Trip::with(['vehicle'])->where([['is_closed', false], ['pickup_at', '<=', $this->time_now_utc], ['reservation_type_id', '=', 2]])->get();
+        $this->user_open_underway_trips = Trip::with(['vehicle'])->where([['user_id', '=', auth()->user()->id], ['is_closed', false], ['pickup_at', '<=', $this->time_now_utc], ['reservation_type_id', '=', 2]])->get();
     }
 
     public function pickup_vehicle($vehicle_id) {
@@ -66,7 +68,7 @@ class Dashboard extends Component {
             $localDate = Carbon::parse($this->pickup_time, new DateTimeZone('Europe/Budapest'));
             $utcDate = $localDate->copy()->timezone('UTC')->format('Y-m-d H:i');
 
-            if ($trip = Trip::where([['vehicle_id', '=', $vehicle_id], ['pickup_at', '<', $this->time_now_utc], ['is_closed', '=', false]])->with('user')->first())
+            if ($trip = Trip::where([['vehicle_id', '=', $vehicle_id], ['pickup_at', '<', $this->time_now_utc], ['return_at', '>=', $this->time_now_utc]])->with('user')->first())
                 throw new Exception('Gépjárműt már lefoglalta: ' . $trip->user->name);
 
             if ($trip = Trip::where([['vehicle_id', '=', $vehicle_id], ['pickup_at', '<=', $utcDate], ['return_at', '>=', $utcDate], ['is_closed', '=', false]])->first())
@@ -121,6 +123,9 @@ class Dashboard extends Component {
                 $trip->is_closed = true;
                 $trip->timestamps = false;
 
+                $now = Carbon::now(new DateTimeZone('UTC'))->format('Y-m-d H:i');
+
+                $trip->return_at = $trip->return_at > $now ? $now : $trip->return_at;
                 $trip->save();
                 $this->mount();
 

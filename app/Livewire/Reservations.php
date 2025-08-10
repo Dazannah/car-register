@@ -7,10 +7,25 @@ use Carbon\Carbon;
 use App\Models\Trip;
 use App\Models\Vehicle;
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Interfaces\IDateChecker;
+use Livewire\Attributes\Url;
 use Illuminate\Database\Eloquent\Collection;
 
 class Reservations extends Component {
+    use WithPagination;
+
+    #[URL(as: 'licence_plate')]
+    public string $filter_licence_plate;
+    #[URL(as: 'name')]
+    public string $filter_name;
+    #[URL(as: 'is_closed')]
+    public bool $filter_is_closed;
+    #[URL(as: 'pickup_at')]
+    public string $filter_pickup_at;
+    #[URL(as: 'return_at')]
+    public string $filter_return_at;
+
     public Collection $user_vehicles;
 
     public bool $is_booking_time_available = false;
@@ -30,16 +45,15 @@ class Reservations extends Component {
     public string|null $success_message;
     public string|null $error_message;
 
-    protected $listeners = ['prebook_vehicle'];
+    protected $listeners = ['prebook_vehicle', 'reset_reservation_filter'];
 
     public function mount() {
         $this->get_user_vehicles();
     }
 
-    public function boot(IDateChecker $date_checker_service) {
+    public function boot() {
         $this->get_user_vehicles();
 
-        $this->date_checker_service = $date_checker_service;
         $this->success_message = null;
         $this->error_message = null;
         $this->interfering_trip = null;
@@ -158,7 +172,47 @@ class Reservations extends Component {
         )->get();
     }
 
+    public function reset_reservation_filter() {
+        $this->reset(['filter_licence_plate', 'filter_name', 'filter_is_closed', 'filter_pickup_at', 'filter_return_at']);
+        $this->resetPage();
+    }
+
+    public function filter_reservations() {
+        return Trip::with(['user', 'vehicle'])->where([['reservation_type_id', 2]])->when(
+            isset($this->filter_licence_plate) && !empty($this->filter_licence_plate),
+            function ($query) {
+                return $query->whereHas('vehicle', function ($inside_query) {
+                    return $inside_query->where('licence_plate', 'LIKE', "%$this->filter_licence_plate%");
+                });
+            }
+        )->when(
+            isset($this->filter_name) && !empty($this->filter_name),
+            function ($query) {
+                return $query->whereHas('user', function ($inside_query) {
+                    return $inside_query->where('name', 'LIKE', "%$this->filter_name%");
+                });
+            }
+        )->when(
+            isset($this->filter_is_closed) && $this->filter_is_closed == true,
+            function ($query) {
+                return $query->where('is_closed', '=', true);
+            }
+        )->when(
+            isset($this->filter_pickup_at) && !empty($this->filter_pickup_at),
+            function ($query) {
+                return $query->where('pickup_at', 'LIKE', "%$this->filter_pickup_at%");
+            }
+        )->when(
+            isset($this->filter_return_at) && !empty($this->filter_return_at),
+            function ($query) {
+                return $query->where('return_at', 'LIKE', "%$this->filter_return_at%");
+            }
+        )->orderBy('return_at', 'desc')->paginate(10);
+    }
+
     public function render() {
-        return view('livewire.reservations');
+        return view('livewire.reservations', [
+            'reservations' => $this->filter_reservations()
+        ]);
     }
 }

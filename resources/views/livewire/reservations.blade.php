@@ -110,7 +110,6 @@
                             {{ __('Előfoglalás') }}
                         </flux:button>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -124,12 +123,12 @@
                 <div>
                     <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-200">Előfoglalások</h3>
                 </div>
-                <div class="flex flex-col gap-2 shrink-0 sm:flex-row">
+                <!--<div class="flex flex-col gap-2 shrink-0 sm:flex-row">
                     <flux:button @click.prevent="show_new = true" variant="primary" class="w-full hover:cursor-pointer">
                         <flux:icon.calendar-plus />
                         {{ __('Új előfoglalás') }}
                     </flux:button>
-                </div>
+                </div>-->
             </div>
 
         </div>

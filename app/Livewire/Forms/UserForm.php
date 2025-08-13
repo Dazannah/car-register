@@ -29,7 +29,7 @@ class UserForm extends Form {
                 Rule::unique('users', 'username')->ignore($this->user->id),
             ],
             'status_id' => 'required',
-            'password' => 'nullable|confirmed',
+            'password' => 'nullable|same:password_confirmed',
         ];
     }
 

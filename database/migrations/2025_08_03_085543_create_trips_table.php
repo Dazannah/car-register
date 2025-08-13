@@ -11,8 +11,8 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('trips', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('pickup_at');
-            $table->timestamp('return_at');
+            $table->timestamp('pickup_at')->useCurrent();;
+            $table->timestamp('return_at')->useCurrent()->useCurrentOnUpdate();;
             $table->foreignId('user_id')->constrained();
             $table->foreignId('vehicle_id')->constrained();
             $table->boolean('is_closed')->default(false);

@@ -113,4 +113,6 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    'to_default' => env('MAIL_TO_DEFAULT_ADDRESS', null)
+
 ];

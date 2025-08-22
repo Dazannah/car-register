@@ -2,13 +2,15 @@
 
 namespace App\Livewire;
 
-use App\Interfaces\IDateChecker;
 use Exception;
 use DateTimeZone;
 use Carbon\Carbon;
 use App\Models\Trip;
 use App\Models\Vehicle;
 use Livewire\Component;
+use App\Events\PickupVehicle;
+use App\Events\ReturnVehicle;
+use App\Interfaces\IDateChecker;
 use Illuminate\Database\Eloquent\Collection;
 
 class Dashboard extends Component {
@@ -86,6 +88,7 @@ class Dashboard extends Component {
             $trip->save();
             $this->mount();
 
+            event(new PickupVehicle($trip));
 
             $this->success_message = 'Felvétel sikeres';
             $this->dispatch('show_success');
@@ -104,6 +107,8 @@ class Dashboard extends Component {
                 $trip->return_at = Carbon::now(new DateTimeZone('UTC'))->format('Y-m-d H:i');
                 $trip->save();
                 $this->mount();
+
+                event(new ReturnVehicle($trip));
 
                 $this->success_message = 'Leadás sikeres';
                 $this->dispatch('show_success');
@@ -128,6 +133,8 @@ class Dashboard extends Component {
                 $trip->return_at = $trip->return_at > $now ? $now : $trip->return_at;
                 $trip->save();
                 $this->mount();
+
+                event(new ReturnVehicle($trip));
 
                 $this->success_message = 'Leadás sikeres';
                 $this->dispatch('show_success');
